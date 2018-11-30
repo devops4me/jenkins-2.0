@@ -1,5 +1,5 @@
 
-# Jenkins2 Configuration
+# Installing Jenkins 2.0 | Docker Pipeline Manager
 
 This repository contains the docker container that supports a fully configured Jenkins 2.0 service with continuous jobs running under the auspices of docker pipelines declaratively defined by a Jenkinsfile.
 
@@ -7,7 +7,9 @@ Let's walk through the 5 steps required to bring up a fully operational Jenkins 
 
 ---
 
-## Jenkins 2.0 Up | 5 Steps
+## 5 Steps | How do I bring up Jenkins 2.0?
+
+You only need to **take 5 steps** to get Jenkins 2.0 up and running.
 
 1. run the jenkins 2.0 docker container
 1. inject the Dockerhub and AWS IAM user credentials
@@ -17,8 +19,6 @@ Let's walk through the 5 steps required to bring up a fully operational Jenkins 
 
 The job set includes one where Jenkins builds its own container image and pushes it to Dockerhub.
 
-
-## The Commands to deploy Jenkins 2.0
 
 ### Step 1 - Run the Jenkins 2.0 docker container
 
@@ -50,7 +50,7 @@ We must inject the credentials before copying in the batch of Jenkins jobs other
     $ safe jenkins post aws http://localhost:8080
 
 
-**The logs below are from safe injecting each of the 3 AWS IAM user credentials in turn.**
+**This printout shows safe in action injecting the AWS IAM user access key credential.**
 
 ```
  - Jenkins Host Url : http://localhost:8080/credentials/store/system/domain/_/createCredentials
@@ -60,24 +60,6 @@ We must inject the credentials before copying in the batch of Jenkins jobs other
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100   369    0     0  100   369      0  14760 --:--:-- --:--:-- --:--:-- 14760
-
-
- - Jenkins Host Url : http://localhost:8080/credentials/store/system/domain/_/createCredentials
- -   Credentials ID : safe.aws.secret.key
- - So what is this? : The secret key of the AWS IAM (programmatic) user credentials.
-
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   391    0     0  100   391      0  48875 --:--:-- --:--:-- --:--:-- 48875
-
-
- - Jenkins Host Url : http://localhost:8080/credentials/store/system/domain/_/createCredentials
- -   Credentials ID : safe.aws.region.key
- - So what is this? : The AWS region key for example eu-west-1 for Dublin in Ireland.
-
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   357    0     0  100   357      0  44625 --:--:-- --:--:-- --:--:-- 44625
 ```
 
 ---

@@ -1,0 +1,53 @@
+
+# --->
+# ---> Going with Ubuntu's Long Term Support (lts)
+# ---> version which is currently 18.04.
+# --->
+
+FROM ubuntu:18.04
+USER root
+
+
+# --->
+# ---> Create the jenkins user with the ubiquitous
+# ---> /var/jenkins_home home directory.
+# --->
+
+RUN useradd --home /var/jenkins_home --create-home --user-group jenkins
+
+
+# --->
+# ---> Create a logs directory at /var/log/jenkins
+# ---> and give ownership of it to the jenkins user.
+# --->
+
+RUN mkdir -p /var/log/jenkins
+RUN chown -R jenkins:jenkins /var/log/jenkins
+
+
+# --->
+# ---> As the jenkins user copy the overarching main
+# ---> configuration file into the home directory.
+# --->
+
+COPY config.xml /var/jenkins_home/config.xml
+
+
+############ COPY config.xml /var/jenkins_home/config.xml
+############ COPY jobs /var/jenkins_home/jobs
+RUN chown -R jenkins:jenkins /var/jenkins_home
+RUN ls -lah /var/jenkins_home
+
+
+# --->
+# ---> Create mount points for the jenkins home and
+# ---> logs directory as this is a volume container.
+# --->
+
+VOLUME [ "/var/log/jenkins", "/var/jenkins_home" ]
+
+
+# --->
+# ---> The jenkins user can take things from here.
+# --->
+USER jenkins

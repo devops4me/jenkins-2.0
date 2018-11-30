@@ -80,20 +80,6 @@ RUN /usr/local/bin/install-plugins.sh \
 
 
 # --->
-# ---> As the jenkins user copy the overarching main
-# ---> configuration file into the home directory.
-# --->
-
-COPY config.xml /var/jenkins_home/config.xml
-
-# is the config file owned by jenkins?
-# is the config file owned by jenkins?
-# is the config file owned by jenkins?
-# is the config file owned by jenkins?
-RUN ls -lah /var/jenkins_home
-
-
-# --->
 # ---> Remove friction aka the Admin Password
 # --->
 
@@ -101,9 +87,13 @@ ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
 
 
 # --->
-# ---> Make sure (as the last thing) that the jenkins
-# ---> user owns and controls /var/jenkins_home
+# ---> For trouble shooting this command tells us what Linux
+# ---> distribution is being used by the mummy container.
 # --->
 
-RUN sudo chown -R jenkins:jenkins /var/jenkins_home
-RUN ls -lah /var/jenkins_home
+RUN cat /etc/*-release && \
+    uname -a           && \
+    uname -mrs         && \
+    cat /proc/version  && \
+    cat /etc/issue     && \
+    cat /etc/os-release

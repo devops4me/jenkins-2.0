@@ -10,68 +10,153 @@ Let's walk through the 5 steps required to bring up a fully operational Jenkins 
 ## Jenkins 2.0 Up | 5 Steps
 
 1. run the jenkins 2.0 docker container
-1. inject in docker repository username/password credentials
-1. inject in the 3 AWS IAM user credentials
-1. copy in the set of IAAS docker pipeline jobs
+1. inject the Dockerhub and AWS IAM user credentials
+1. copy in the set of docker pipeline jobs
+1. secure Jenkins with an administrator user
 1. ask Jenkins to reload its configuration
 
 The job set includes one where Jenkins builds its own container image and pushes it to Dockerhub.
 
 
-## The Jenkins Deployment Commands
+## The Commands to deploy Jenkins 2.0
 
 ### Step 1 - Run the Jenkins 2.0 docker container
 
-    $ docker run --name=jenkins2-volume devops4me/jenkins2-volume:latest
+The plan is to build and run a volume container and then run the run the real mckoy pulled down from Dockerhub. See the prerequisites for an explanation of **how the Jenkins 2.0 image is built** for the very first time.
+
+    $ docker build --rm --tag devops4me/j2volume --file Dockerfile_j2volume .
+    $ docker run --name j2volume devops4me/j2volume
+
     $ docker run --tty --privileged --detach \
           --volume       /var/run/docker.sock:/var/run/docker.sock \
           --volume       /usr/bin/docker:/usr/bin/docker \
-          --publish      8080:8080    \
-          --name         jenkins-2.0  \
-          devops4me/jenkins2:latest;
+          --volumes-from j2volume        \
+          --publish      8080:8080       \
+          --name         jenkins-2.0     \
+          devops4me/jenkins-2.0:v0.1.0001;
+
+    $ docker exec --interactive --tty jenkins-2.0 bash -c "ls -lah /var/jenkins_home/jobs"
 
 ---
 
-## Prerequisites
+### Step 2 - Inject the DockerHub and AWS Credentials
 
-It is important we document a few things that need to be in place before the big bang (beginning of time).
+We must inject the credentials before copying in the batch of Jenkins jobs otherwise the jobs will promptly fail as they discover they can't talk to the AWS cloud or login to Dockerhub.
+
+
+    $ safe open <<chapter>> <<verse>>
+    $ safe jenkins post docker http://localhost:8080
+    $ safe open <<chapter>> <<verse>>
+    $ safe jenkins post aws http://localhost:8080
+
+
+**The logs below are from safe injecting each of the 3 AWS IAM user credentials in turn.**
+
+```
+ - Jenkins Host Url : http://localhost:8080/credentials/store/system/domain/_/createCredentials
+ -   Credentials ID : safe.aws.access.key
+ - So what is this? : The access key of the AWS IAM (programmatic) user credentials.
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   369    0     0  100   369      0  14760 --:--:-- --:--:-- --:--:-- 14760
+
+
+ - Jenkins Host Url : http://localhost:8080/credentials/store/system/domain/_/createCredentials
+ -   Credentials ID : safe.aws.secret.key
+ - So what is this? : The secret key of the AWS IAM (programmatic) user credentials.
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   391    0     0  100   391      0  48875 --:--:-- --:--:-- --:--:-- 48875
+
+
+ - Jenkins Host Url : http://localhost:8080/credentials/store/system/domain/_/createCredentials
+ -   Credentials ID : safe.aws.region.key
+ - So what is this? : The AWS region key for example eu-west-1 for Dublin in Ireland.
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   357    0     0  100   357      0  44625 --:--:-- --:--:-- --:--:-- 44625
+```
+
+---
+
+
+### Step 3 - Copy in the Jenkins Jobs
+
+You are still in the git repository folder which contains a directory called jobs. Let's copy it into the docker volume.
+
+    $ docker cp jobs j2volume:/var/jenkins_home
+    $ docker exec --interactive --tty jenkins-2.0 bash -c "ls -lah /var/jenkins_home/jobs"
+
+Verify that the jenkins user owns the job repository and the individual job configurations.
+
+---
+
+### Step 4 - Secure Jenkins with an Admin user
+
+    This section is still to be documented.
+
+
+### Step 5 - Reload Jenkins' Configuration
+
+    $ curl -X POST http://localhost:8080/reload
+
+---
+
+## Jenkins is now running | http://localhost:8080
+
+Well done - **[visit Jenkins in any browser](http://localhost:8080)** and marvel at how it takes on its workload like the faithful butler it is.
+
+The next hurdle is to get a **Jenkins cluster up and running** or connect the Jenkins head to a Kubernetes backend for managing huge docker oriented workloads.
+
+
+## Prerequisites | Back to Square One
+
+**Why are we going back to square one?**
+
+### Build the first volume and Jenkins 2.0 Service Images
+
+Did you know that Jenkins can start building its own container image ( **[look at job jenkins-2.0-docker-image](jobs/jenkins-2.0-docker-image/config.xml)** ) once it is up and running.
+
+However we must get back to square one to demonstrate how to make **the very first Jenkins chicken (or egg)**!
+
+
+    $ git clone https://github.com/devops4me/jenkins-2.0 docker.jenkins-2.0
+    $ cd docker.jenkins-2.0
+    $ docker build --rm --tag devops4me/jenkins-2.0 .
+    $ safe open dockerhub devops4me     # if the safe credentials manager is installed
+    $ safe docker login                 # if the safe credentials manager is installed
+    $ docker push devops4me/jenkins-2.0
+    $ docker tag devops4me/jenkins-2.0 devops4me/jenkins-2.0:v0.1.0001
+    $ docker push devops4me/jenkins-2.0:v0.1.0001
+    $ safe docker logout                 # if the safe credentials manager is installed
 
 
 
 ### Clear Out Containers and Images
 
-This is optional but often with Docker - your changes to not come into effect because it uses a cached artifact. This is how to wipe the slate clearn.
+This is optional but often with Docker - **your changes might be ignored due to caching**. This is how to wipe the slate clearn.
 
     $ docker ps -a
     $ docker rm -vf $(docker ps -aq)
     $ docker images -a
     $ docker rmi $(docker images -aq) --force
 
-### Manually build the very first Jenkins 2.0 Image
-
-Jenkins can start building its own container image ( **[look at job jenkins-2.0-docker-image](jobs/jenkins-2.0-docker-image/config.xml)** ) once its up and running - here's how to make **the very first chicken (or egg)**.
 
 
-    $ git clone https://github.com/devops4me/jenkins-2.0 docker.jenkins-2.0
-    $ cd docker.jenkins-2.0
-    $ docker build --rm --tag devops4me/jenkins-2.0 .
-    $ safe open dockerhub devops4me
-    $ safe docker login
-    $ docker push devops4me/jenkins-2.0
-    $ docker tag devops4me/jenkins-2.0 devops4me/jenkins-2.0:v0.1.0001
-    $ docker push devops4me/jenkins-2.0:v0.1.0001
+
+---
+
+---
+
+
 
 
 
 
 When docker builds the jenkins volume ([see Dockerfile](Dockerfile)) it creates the home directory and copies in both the **global configuration** and **all the job configurations**.
-
-### Chicken and Egg
-
-There is a Jenkins job that builds the Jenkins job configuration docker image and posts it to DockerHub.
-
-However to bring up Jenkins itself for the very first time these commands are executed by a devops task runner.
-
 
 
 
@@ -83,7 +168,7 @@ Use **git** to pull down the **[Jenkins2 configuration files](https://github.com
     $ cd jenkins2-config
     $ tree
     $ docker cp jobs jenkins2:/var/jenkins_home
-    $ docker exec -i jenkins2 bash -c "ls -lah /var/jenkins_home/jobs"
+    $ docker exec --interactive --tty j2volume bash -c "ls -lah /var/jenkins_home"
     $ docker cp config.xml jenkins2:/var/jenkins_home/
     $ curl -X POST http://localhost:8080/reload
 

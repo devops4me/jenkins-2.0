@@ -80,6 +80,15 @@ RUN /usr/local/bin/install-plugins.sh \
 
 
 # --->
+# ---> Copy the overarching Jenkins configuration
+# ---> followed by all the job configurations.
+# --->
+
+COPY config.xml /var/jenkins_home/config.xml
+COPY jobs /var/jenkins_home/jobs
+
+
+# --->
 # ---> Remove friction aka the Admin Password
 # --->
 

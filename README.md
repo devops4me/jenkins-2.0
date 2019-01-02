@@ -24,18 +24,16 @@ The job set includes one where Jenkins builds its own container image and pushes
 
 The plan is to build and run a volume container and then run the run the real mckoy pulled down from Dockerhub. See the prerequisites for an explanation of **how the Jenkins 2.0 image is built** for the very first time.
 
-    $ docker build --rm --tag devops4me/j2volume --file Dockerfile_j2volume .
-    $ docker run --name j2volume devops4me/j2volume
-
-    $ docker run --tty --privileged --detach \
+``` bash
+docker run --name jenkins2-volume devops4me/jenkins2-volume
+docker run --tty --privileged --detach \
           --volume       /var/run/docker.sock:/var/run/docker.sock \
           --volume       /usr/bin/docker:/usr/bin/docker \
-          --volumes-from j2volume        \
+          --volumes-from jenkins2-volume \
           --publish      8080:8080       \
           --name         jenkins-2.0     \
-          devops4me/jenkins-2.0:v0.1.0001;
-
-    $ docker exec --interactive --tty jenkins-2.0 bash -c "ls -lah /var/jenkins_home/jobs"
+          devops4me/jenkins-2.0;
+```
 
 ---
 

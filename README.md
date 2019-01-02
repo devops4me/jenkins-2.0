@@ -38,10 +38,12 @@ docker run --tty --privileged --detach \
 We must inject the credentials before copying in the batch of Jenkins jobs otherwise the jobs will promptly fail as they discover they can't talk to the AWS cloud or login to Dockerhub.
 
 
-    $ safe open <<chapter>> <<verse>>
-    $ safe jenkins post docker http://localhost:8080
-    $ safe open <<chapter>> <<verse>>
-    $ safe jenkins post aws http://localhost:8080
+``` bash
+safe open <<chapter>> <<verse>>
+safe jenkins post docker http://localhost:8080
+safe open <<chapter>> <<verse>>
+safe jenkins post aws http://localhost:8080
+```
 
 
 **This printout shows safe in action injecting the AWS IAM user access key credential.**
@@ -61,7 +63,9 @@ We must inject the credentials before copying in the batch of Jenkins jobs other
 
 ### Step 3 - Reload Jenkins' Configuration
 
-    $ curl -X POST http://localhost:8080/reload
+``` bash
+curl -X POST http://localhost:8080/reload
+```
 
 
 ---
@@ -97,19 +101,25 @@ However we must get back to square one to demonstrate how to make **the very fir
 
 
 
-### Clear Out Containers and Images
+## Docker | How to start from scratch!
 
-This is optional but often with Docker - **your changes might be ignored due to caching**. This is how to wipe the slate clean.
+**This is how to start from scratch and remove all docker containers and images.**
 
-    $ docker ps -a
-    $ docker rm -vf $(docker ps -aq)
-    $ docker images -a
-    $ docker rmi $(docker images -aq) --force
+```bash
+docker rm -vf $(docker ps -aq)
+docker rmi $(docker images -aq) --force
+```
+
+How about checking whether everything really has gone.
+
+```bash
+docker ps -a
+docker images -a
+```
 
 
 ---
 
----
 
 When docker builds the jenkins volume ([see Dockerfile](Dockerfile)) it creates the home directory and copies in both the **global configuration** and **all the job configurations**.
 

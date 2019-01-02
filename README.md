@@ -3,33 +3,29 @@
 
 This repository contains the docker container that supports a fully configured Jenkins 2.0 service with continuous jobs running under the auspices of docker pipelines declaratively defined by a Jenkinsfile.
 
-Let's walk through the 5 steps required to bring up a fully operational Jenkins service from nought.
+Let's walk through the 3 steps required to bring up a fully operational Jenkins service from nought.
+
 
 ---
 
-## 5 Steps | How do I bring up Jenkins 2.0?
 
-You only need to **take 5 steps** to get Jenkins 2.0 up and running.
+## Usage
 
-1. run the jenkins 2.0 docker container
-1. inject the Dockerhub and AWS IAM user credentials
-1. copy in the set of docker pipeline jobs
-1. secure Jenkins with an administrator user
-1. ask Jenkins to reload its configuration
+**We only need *3 steps* to get Jenkins 2.0 up and running.**
+
+1. **run the jenkins 2.0 docker container**
+1. *inject the Dockerhub and AWS IAM user credentials*
+1. ask Jenkins to **reload its configuration**
 
 The job set includes one where Jenkins builds its own container image and pushes it to Dockerhub.
 
 
-### Step 1 - Run the Jenkins 2.0 docker container
-
-The plan is to build and run a volume container and then run the run the real mckoy pulled down from Dockerhub. See the prerequisites for an explanation of **how the Jenkins 2.0 image is built** for the very first time.
+### Step 1 - Run the Jenkins 2.0 Docker Container
 
 ``` bash
-docker run --name jenkins2-volume devops4me/jenkins2-volume
 docker run --tty --privileged --detach \
           --volume       /var/run/docker.sock:/var/run/docker.sock \
           --volume       /usr/bin/docker:/usr/bin/docker \
-          --volumes-from jenkins2-volume \
           --publish      8080:8080       \
           --name         jenkins-2.0     \
           devops4me/jenkins-2.0;
@@ -63,27 +59,13 @@ We must inject the credentials before copying in the batch of Jenkins jobs other
 ---
 
 
-### Step 3 - Copy in the Jenkins Jobs
-
-You are still in the git repository folder which contains a directory called jobs. Let's copy it into the docker volume.
-
-    $ docker cp jobs j2volume:/var/jenkins_home
-    $ docker exec --interactive --tty jenkins-2.0 bash -c "ls -lah /var/jenkins_home/jobs"
-
-Verify that the jenkins user owns the job repository and the individual job configurations.
-
----
-
-### Step 4 - Secure Jenkins with an Admin user
-
-    This section is still to be documented.
-
-
-### Step 5 - Reload Jenkins' Configuration
+### Step 3 - Reload Jenkins' Configuration
 
     $ curl -X POST http://localhost:8080/reload
 
+
 ---
+
 
 ## Jenkins is now running | http://localhost:8080
 

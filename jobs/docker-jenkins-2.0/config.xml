@@ -10,7 +10,7 @@
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
   <description></description>
-  <displayName>DockerHub Push for Jenkins 2.0</displayName>
+  <displayName>Docker Build - Jenkins 2.0</displayName>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>

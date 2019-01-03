@@ -75,6 +75,12 @@ curl -X POST http://localhost:8080/reload
 
 Well done - **[visit Jenkins in any browser](http://localhost:8080)** and marvel at how it takes on its workload like the faithful butler it is.
 
+```bash
+docker exec --interactive --tty <<container-name>> bash -c "ls -lah /var/jenkins_home"
+```
+
+You can use the above command to poke around and examine the innards of the jenkins container.
+
 The next hurdle is to get a **Jenkins cluster up and running** or connect the Jenkins head to a Kubernetes backend for managing huge docker oriented workloads.
 
 

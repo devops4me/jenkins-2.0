@@ -11,7 +11,7 @@ pipeline
             steps
             {
                 sh 'ls -lah'
-                sh 'echo releaseSoftwareToRepo'
+                sh 'echo replace_me_with_a_docker_run'
             }
         }
 
@@ -23,9 +23,9 @@ pipeline
                 {
                     docker.withRegistry('', 'safe.docker.login.id')
                     {
-                        def customImage = docker.build("devops4me/jenkins-2.0:${env.BUILD_ID}")
-                        customImage.push("${env.BUILD_NUMBER}")
-                        customImage.push("latest")
+                        def customImage = docker.build( "devops4me/jenkins-2.0" )
+                        customImage.push( "v1.0.0" )
+                        customImage.push( "latest" )
                     }
                 }
             }

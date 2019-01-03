@@ -7,8 +7,8 @@ FROM jenkins/jenkins:lts
 USER root
 
 # --->
-# ---> Assume the root user and install git, ruby, sudo,
-# ---> a time zone manipulator and the AWS command line
+# ---> Assume the root user and install git, ruby, a
+# ---> time zone manipulator and the AWS command line
 # ---> interface. See documentation to understand why
 # ---> the libltdl7 package is installed.
 # --->
@@ -21,51 +21,14 @@ RUN apt-get update && apt-get --assume-yes install -qq -o=Dpkg::Use-Pty=0 \
       libltdl7  \
       maven     \
       ruby-full \
-      sudo      \
       tree      \
       tzdata    \
       zlib1g-dev
-
-
-# --->
-# ---> Visit the README and look at the section 
-# ---> saying "Fudge | Docker User Group ID"
-# --->
-
-############ -----------> RUN groupadd -for -g 127 docker
-############ -----------> RUN usermod -aG docker jenkins
-
-# --->
-# ---> Change the container timezone from UTC to Europe/London
-# --->
 
 RUN echo "The date / time before timezone change ==] `date`"
 RUN cp -vf /usr/share/zoneinfo/Europe/London /etc/localtime
 RUN echo Europe/London | tee /etc/timezone
 RUN echo "The date / time after timezone changes ==] `date`"
-
-
-# --->
-# ---> Enable jenkins to run commands with sudo priveleges
-# --->
-
-############ -----------> RUN adduser jenkins sudo
-############ -----------> RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-
-
-############ -----------> USER jenkins
-############ -----------> WORKDIR /var/jenkins_home
-
-# --->
-# ---> Assume ownership of /var/jenkins_home
-# ---> Then finally become the Jenkins user
-# --->
-
-### RUN chown -R jenkins:jenkins /var/jenkins_home
-### WORKDIR /var/jenkins_home
-### USER jenkins
-
-RUN ls -lah /var/jenkins_home
 
 # --->
 # ---> Install the listed Jenkins plugins
@@ -81,42 +44,16 @@ RUN /usr/local/bin/install-plugins.sh \
      workflow-multibranch  \
      workflow-scm-step
 
-
-RUN ls -lah /var/jenkins_home
-
-
 # --->
 # ---> Copy the overarching Jenkins configuration
 # ---> followed by all the job configurations.
 # --->
 
-##### ------> RUN sudo rm -fr /var/jenkins_home/*
-
 COPY config.xml /var/jenkins_home/config.xml
 COPY jobs /var/jenkins_home/jobs
-
-RUN ls -lah /var/jenkins_home
-
-############ -----------> RUN sudo chmod -R 777 /var/jenkins_home
-############ -----------> RUN sudo chown -R jenkins:jenkins /var/jenkins_home
-
-RUN ls -lah /var/jenkins_home
 
 # --->
 # ---> Remove friction aka the Admin Password
 # --->
 
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
-
-
-# --->
-# ---> For trouble shooting this command tells us what Linux
-# ---> distribution is being used by the mummy container.
-# --->
-
-##### ------> RUN cat /etc/*-release && \
-##### ------>     uname -a           && \
-##### ------>     uname -mrs         && \
-##### ------>     cat /proc/version  && \
-##### ------>     cat /etc/issue     && \
-##### ------>     cat /etc/os-release

@@ -3,20 +3,8 @@
 # ---> Going with the Long Term Support version
 # ---> of Jenkins as no need for bleeding edge.
 # --->
-###########################  FROM jenkins/jenkins:lts
-
-
-FROM ubuntu:18.04
+FROM jenkins/jenkins:lts
 USER root
-
-RUN apt-get update && apt-get --assume-yes install wget gnupg2
-
-RUN wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | apt-key add -
-RUN echo "deb https://pkg.jenkins.io/debian binary/" >> /etc/apt/sources.list
-
-
-############  sudo apt-get update
-############ sudo apt-get install jenkins
 
 # --->
 # ---> Assume the root user and install git, ruby, sudo,
@@ -25,14 +13,11 @@ RUN echo "deb https://pkg.jenkins.io/debian binary/" >> /etc/apt/sources.list
 # ---> the libltdl7 package is installed.
 # --->
 
-################## USER root
-
 RUN apt-get update && apt-get --assume-yes install -qq -o=Dpkg::Use-Pty=0 \
       awscli    \
       build-essential \
       patch     \
       git       \
-      jenkins   \
       libltdl7  \
       maven     \
       ruby-full \
@@ -47,8 +32,8 @@ RUN apt-get update && apt-get --assume-yes install -qq -o=Dpkg::Use-Pty=0 \
 # ---> saying "Fudge | Docker User Group ID"
 # --->
 
-RUN groupadd -for -g 127 docker
-RUN usermod -aG docker jenkins
+############ -----------> RUN groupadd -for -g 127 docker
+############ -----------> RUN usermod -aG docker jenkins
 
 # --->
 # ---> Change the container timezone from UTC to Europe/London
@@ -64,15 +49,12 @@ RUN echo "The date / time after timezone changes ==] `date`"
 # ---> Enable jenkins to run commands with sudo priveleges
 # --->
 
-RUN adduser jenkins sudo
-RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+############ -----------> RUN adduser jenkins sudo
+############ -----------> RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 
-USER jenkins
-
-###################### RUN sudo systemctl start jenkins
-RUN echo $PWD
-RUN sudo ls -lah /var/lib/jenkins
+############ -----------> USER jenkins
+############ -----------> WORKDIR /var/jenkins_home
 
 # --->
 # ---> Assume ownership of /var/jenkins_home
@@ -83,21 +65,24 @@ RUN sudo ls -lah /var/lib/jenkins
 ### WORKDIR /var/jenkins_home
 ### USER jenkins
 
-RUN ls -lah /usr/local/bin
+RUN ls -lah /var/jenkins_home
 
 # --->
 # ---> Install the listed Jenkins plugins
 # --->
 
-#### ------------> RUN /usr/local/bin/install-plugins.sh \
-#### ------------>      git                   \
-#### ------------>      git-client            \
-#### ------------>      ssh-credentials       \
-#### ------------>      workflow-aggregator   \
-#### ------------>      build-pipeline-plugin \
-#### ------------>      docker-workflow       \
-#### ------------>      workflow-multibranch  \
-#### ------------>      workflow-scm-step
+RUN /usr/local/bin/install-plugins.sh \
+     git                   \
+     git-client            \
+     ssh-credentials       \
+     workflow-aggregator   \
+     build-pipeline-plugin \
+     docker-workflow       \
+     workflow-multibranch  \
+     workflow-scm-step
+
+
+RUN ls -lah /var/jenkins_home
 
 
 # --->
@@ -106,12 +91,16 @@ RUN ls -lah /usr/local/bin
 # --->
 
 ##### ------> RUN sudo rm -fr /var/jenkins_home/*
-##### ------> COPY config.xml /var/jenkins_home/config.xml
-##### ------> COPY jobs /var/jenkins_home/jobs
-##### ------> RUN sudo chown -R jenkins:jenkins /var/jenkins_home
 
-RUN ls -lah $PWD
+COPY config.xml /var/jenkins_home/config.xml
+COPY jobs /var/jenkins_home/jobs
 
+RUN ls -lah /var/jenkins_home
+
+############ -----------> RUN sudo chmod -R 777 /var/jenkins_home
+############ -----------> RUN sudo chown -R jenkins:jenkins /var/jenkins_home
+
+RUN ls -lah /var/jenkins_home
 
 # --->
 # ---> Remove friction aka the Admin Password

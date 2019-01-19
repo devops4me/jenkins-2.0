@@ -10,7 +10,7 @@
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
   <description></description>
-  <displayName>Docker | Build RabbitMQ 3.7.8</displayName>
+  <displayName>Docker Build - RabbitMQ 3.7.8</displayName>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>

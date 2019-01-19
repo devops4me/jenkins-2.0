@@ -10,7 +10,7 @@
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
   </actions>
   <description></description>
-  <displayName>Test RabbitMQ SystemD Cloud Config</displayName>
+  <displayName>Cloud Config Test - RabbitMQ</displayName>
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>

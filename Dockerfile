@@ -14,14 +14,12 @@ USER root
 # --->
 
 RUN apt-get update && apt-get --assume-yes install -qq -o=Dpkg::Use-Pty=0 \
-      awscli    \
       build-essential \
       patch     \
       git       \
       libltdl7  \
       maven     \
       ruby-full \
-      tree      \
       tzdata    \
       zlib1g-dev
 
@@ -35,22 +33,34 @@ RUN echo "The date / time after timezone changes ==] `date`"
 # --->
 
 RUN /usr/local/bin/install-plugins.sh \
-     git                   \
-     git-client            \
-     ssh-credentials       \
-     workflow-aggregator   \
-     build-pipeline-plugin \
-     docker-workflow       \
-     workflow-multibranch  \
-     workflow-scm-step
+    git                   \
+    git-client            \
+    ssh-credentials       \
+    sonar                 \
+    workflow-aggregator   \
+    build-pipeline-plugin \
+    docker-workflow       \
+    workflow-multibranch  \
+    workflow-scm-step
+
+
+# --->
+# ---> Copy the SonarQube configuration and installations
+# ---> for JAVA and .NET projects.
+# --->
+
+COPY hudson.plugins.sonar.SonarGlobalConfiguration.xml /var/jenkins_home/hudson.plugins.sonar.SonarGlobalConfiguration.xml
+COPY hudson.plugins.sonar.SonarRunnerInstallation.xml /var/jenkins_home/hudson.plugins.sonar.SonarRunnerInstallation.xml
+COPY hudson.plugins.sonar.MsBuildSQRunnerInstallation.xml /var/jenkins_home/hudson.plugins.sonar.MsBuildSQRunnerInstallation.xml
+
 
 # --->
 # ---> Copy the overarching Jenkins configuration
 # ---> followed by all the job configurations.
 # --->
 
-COPY config.xml /var/jenkins_home/config.xml
-COPY jobs /var/jenkins_home/jobs
+######## COPY config.xml /var/jenkins_home/config.xml
+######## COPY jobs /var/jenkins_home/jobs
 
 # --->
 # ---> Remove friction aka the Admin Password

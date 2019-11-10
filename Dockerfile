@@ -1,7 +1,7 @@
 
 # --->
 # ---> Going with the Long Term Support version
-# ---> of Jenkins as no need for bleeding edge.
+# ---> of Jenkins.
 # --->
 FROM jenkins/jenkins:lts
 USER root

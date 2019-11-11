@@ -3,7 +3,7 @@
   <installations>
     <hudson.plugins.sonar.SonarInstallation>
       <name>sonarqube-service</name>
-      <serverUrl>http://servicehost:9000</serverUrl>
+      <serverUrl>http://sonarqube:9000</serverUrl>
       <credentialsId>sonar.access.token</credentialsId>
       <mojoVersion></mojoVersion>
       <additionalProperties></additionalProperties>

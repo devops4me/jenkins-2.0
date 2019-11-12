@@ -1,0 +1,29 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <localRepository>/usr/share/maven/ref/repository</localRepository>
+
+ <servers>
+    <server>
+      <id>maven-snapshots</id>
+      <username>admin</username>
+      <password>p455w0rd</password>
+    </server>
+    <server>
+      <id>maven-releases</id>
+      <username>admin</username>
+      <password>p455w0rd</password>
+    </server>
+  </servers>
+
+  <mirrors>
+    <mirror>
+      <id>maven-central</id>
+      <name>maven central</name>
+      <url>http://localhost:8081/repository/maven-central/</url>
+      <mirrorOf>*</mirrorOf>
+    </mirror>
+  </mirrors>
+
+</settings>

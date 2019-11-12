@@ -55,6 +55,13 @@ COPY hudson.plugins.sonar.MsBuildSQRunnerInstallation.xml /var/jenkins_home/huds
 
 
 # --->
+# ---> Insert the maven settings that defines a localhost Nexus
+# ---> repository and the credentials necessary to write to it
+# --->
+
+COPY settings.xml /var/jenkins_home/settings.xml
+
+# --->
 # ---> Copy the overarching Jenkins configuration
 # ---> followed by all the job configurations.
 # --->

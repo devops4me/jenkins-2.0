@@ -66,8 +66,8 @@ COPY settings.xml /var/jenkins_home/settings.xml
 # ---> followed by all the job configurations.
 # --->
 
+COPY jobs /var/jenkins_home/jobs
 ######## COPY config.xml /var/jenkins_home/config.xml
-######## COPY jobs /var/jenkins_home/jobs
 
 # --->
 # ---> Remove friction aka the Admin Password

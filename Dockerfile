@@ -15,12 +15,13 @@ USER root
 
 RUN apt-get update && apt-get --assume-yes install -qq -o=Dpkg::Use-Pty=0 \
       build-essential \
-      patch     \
-      git       \
-      libltdl7  \
-      maven     \
-      ruby-full \
-      tzdata    \
+      patch      \
+      git        \
+      kubernetes \
+      libltdl7   \
+      maven      \
+      ruby-full  \
+      tzdata     \
       zlib1g-dev
 
 RUN echo "The date / time before timezone change ==] `date`"

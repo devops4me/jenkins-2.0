@@ -16,8 +16,6 @@ USER root
 RUN apt-get update && apt-get --assume-yes install -qq -o=Dpkg::Use-Pty=0 \
       build-essential \
       patch      \
-      git        \
-      kubernetes \
       libltdl7   \
       maven      \
       ruby-full  \
@@ -47,13 +45,11 @@ RUN /usr/local/bin/install-plugins.sh \
 
 # --->
 # ---> Copy the SonarQube configuration and installations
-# ---> for JAVA and .NET projects.
+# ---> for JAVA projects.
 # --->
 
 COPY hudson.plugins.sonar.SonarGlobalConfiguration.xml /var/jenkins_home/hudson.plugins.sonar.SonarGlobalConfiguration.xml
 COPY hudson.plugins.sonar.SonarRunnerInstallation.xml /var/jenkins_home/hudson.plugins.sonar.SonarRunnerInstallation.xml
-COPY hudson.plugins.sonar.MsBuildSQRunnerInstallation.xml /var/jenkins_home/hudson.plugins.sonar.MsBuildSQRunnerInstallation.xml
-
 
 # --->
 # ---> Insert the maven settings that defines a localhost Nexus

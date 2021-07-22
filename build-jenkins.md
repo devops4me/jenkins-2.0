@@ -1,9 +1,7 @@
 
 # Jenkins 2.1 Continuous Delivery Pipelines
 
-This Git project builds a **dockerized Jenkins 2 service** that employs Docker pipelines to continuously integrate and deliver high quality DevOps infrastructure and software. **Kubernetes** and Docker Swarm agents are employed to crunch through the build, test and quality assurance workloads.
-
-## [How to Build a Jenkins2 Declarative Pipeline for managing Terraform Infrastructure State](https://www.devopswiki.co.uk/)
+This Git project builds a **dockerized Jenkins 2 service** that employs Docker pipelines to continuously integrate and deliver high quality DevOps infrastructure and software.
 
 ## Introduction
 
@@ -31,13 +29,13 @@ Check in docker hub to ensure that the image has been pushed with both a **lates
 
 ## Build and Push the Jenkins2 Main Docker Image
 
-    $ git clone https://github.com/devops4me/jenkins2-docker devops4me.jenkins2-docker
-    $ cd devops4me.jenkins2-docker
+    $ git clone https://github.com/devops4me/jenkins-2.0
+    $ cd jenkins-2.0
     $ docker login --username devops4me
-    $ docker build --rm --tag devops4me/jenkins2 .
-    $ docker push devops4me/jenkins2
-    $ docker tag devops4me/jenkins2 devops4me/jenkins2:v0.1.0003
-    $ docker push devops4me/jenkins2:v0.1.0003
+    $ docker build --rm --tag devops4me/jenkins-2.0 .
+    $ docker push devops4me/jenkins-2.0
+    $ docker tag devops4me/jenkins-2.0 devops4me/jenkins-2.0:v3.0.0
+    $ docker push devops4me/jenkins-2.0:v3.0.0
     $ docker logout
 
 Check in docker hub to ensure that the image has been pushed with both a **latest tag** and a **versioned tag**.

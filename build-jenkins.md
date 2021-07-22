@@ -41,7 +41,20 @@ Check in docker hub to ensure that the image has been pushed with both a **lates
 Check in docker hub to ensure that the image has been pushed with both a **latest tag** and a **versioned tag**.
 
 
-## Use Docker to Run Jenins 2
+## Use Docker to Run Jenins 2 (Without a Volume)
+
+Now we've built the Jenkins2 container, our attention turns to running it so that it can start processing its many workloads (jobs).
+
+```
+docker run --tty --privileged --detach \
+      --volume       /var/run/docker.sock:/var/run/docker.sock \
+      --volume       /usr/bin/docker:/usr/bin/docker \
+      --publish      8080:8080       \
+      --name         jenkins-2.0     \
+      devops4me/jenkins-2.0:latest;
+```
+
+## Use Docker to Run Jenins 2 (With a Volume)
 
 Now we've built the Jenkins2 container, our attention turns to running it so that it can start processing its many workloads (jobs).
 

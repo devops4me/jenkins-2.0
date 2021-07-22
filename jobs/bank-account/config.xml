@@ -35,8 +35,7 @@
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>http://localhost:2346/microservice/bank-account.git</url>
-          <credentialsId>git.credentials.id</credentialsId>
+          <url>https://github.com/apolloakora/bank-account.git</url>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
       <branches>
